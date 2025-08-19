@@ -10,19 +10,19 @@ import { Plus, Eye, Edit, Trash2, TrendingUp, Users, Heart } from "lucide-react"
 import Link from "next/link"
 
 export default async function DashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient();
 
   if (!supabase) {
-    return <div>Database connection error</div>
+    return <div>Database connection error</div>;
   }
 
   const {
     data: { user },
     error: authError,
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    redirect("/auth/login")
+    redirect("/auth/login");
   }
 
   // Fetch user profile

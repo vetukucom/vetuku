@@ -4,7 +4,7 @@ import LoginForm from "@/components/auth/login-form"
 
 export default async function LoginPage() {
   // If Supabase is not configured, show setup message directly
-  if (!isSupabaseConfigured) {
+  if (!(await isSupabaseConfigured())) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <h1 className="text-2xl font-bold mb-4 text-gray-900">Connect Supabase to get started</h1>
@@ -13,15 +13,15 @@ export default async function LoginPage() {
   }
 
   // Check if user is already logged in
-  const supabase = createClient()
+  const supabase = await createClient();
   if (supabase) {
     const {
       data: { session },
-    } = await supabase.auth.getSession()
+    } = await supabase.auth.getSession();
 
     // If user is logged in, redirect to home page
     if (session) {
-      redirect("/")
+      redirect("/");
     }
   }
 

@@ -1,32 +1,35 @@
-"use client"
-
-import { Suspense } from "react"
-import { createClient } from "@/lib/supabase/server"
-import { AdListing } from "@/components/ad-listing"
-import { SearchFilters } from "@/components/search-filters"
-import { Button } from "@/components/ui/button"
-import { Plus, Grid3X3, List } from "lucide-react"
-import Link from "next/link"
+import { Suspense } from "react";
+import { createClient } from "@/lib/supabase/server";
+import { AdListing } from "@/components/ad-listing";
+import SearchFilters from "@/components/search-filters";
+import { Button } from "@/components/ui/button";
+import { Plus, Grid3X3, List } from "lucide-react";
+import Link from "next/link";
 
 interface ItemsPageProps {
   searchParams: {
-    q?: string
-    category?: string
-    location?: string
-    min_price?: string
-    max_price?: string
-    condition?: string
-    sort?: string
-    view?: string
-    page?: string
-  }
+    q?: string;
+    category?: string;
+    location?: string;
+    min_price?: string;
+    max_price?: string;
+    condition?: string;
+    sort?: string;
+    view?: string;
+    page?: string;
+  };
 }
 
 export default async function ItemsPage({ searchParams }: ItemsPageProps) {
-  const supabase = createClient()
-
+  const supabase = await createClient();
+  if (!supabase) {
+    return <div className="min-h-screen flex items-center justify-center">Database connection error</div>;
+  }
   // Get total count for pagination
-  const { count } = await supabase.from("ads").select("*", { count: "exact", head: true }).eq("status", "active")
+  const { count } = await supabase
+    .from("ads")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "active");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,7 +60,7 @@ export default async function ItemsPage({ searchParams }: ItemsPageProps) {
             <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
               <Suspense fallback={<div>Loading filters...</div>}>
-                <SearchFilters />
+                <SearchFilters onFiltersChange={() => {}} />
               </Suspense>
             </div>
           </div>
